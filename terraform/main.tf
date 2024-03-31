@@ -56,3 +56,10 @@ resource "azurerm_databricks_workspace" "this" {
 output "databricks_host" {
   value = "https://${azurerm_databricks_workspace.this.workspace_url}/"
 }
+
+
+module "storageaccont" {
+  source = "./resources/storages_accounts"
+
+  
+}
