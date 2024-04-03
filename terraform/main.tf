@@ -1,18 +1,29 @@
-terraform {
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~>2.0"
+locals {
+  employee_table_entities = {
+    "001" = {
+      "row_key"       = "001"
+      "partition_key" = "Department1"
+      "name"          = "Jonh Doe"
+      "salary"        = 50000
+      "date_joined"   = "2023-01-15"
+    }
+
+    "002" = {
+      "row_key"       = "002"
+      "partition_key" = "Department2"
+      "name"          = "Jane Smith"
+      "salary"        = 60000
+      "date_joined"   = "2022-08-20"
+    }
+
+    "003" = {
+      "row_key"       = "003"
+      "partition_key" = "Department3"
+      "name"          = "Alex Lee"
+      "salary"        = 55000
+      "date_joined"   = "2023-03-05"
     }
   }
-
-  backend "azurerm" {
-    resource_group_name  = "rg-dev-westeurope"
-    storage_account_name = "stsdevwesteurope"
-    container_name       = "data"
-    key                  = "dev.terraform.tfstate"
-  }
-
 }
 
 provider "azurerm" {
@@ -59,7 +70,19 @@ output "databricks_host" {
 
 
 module "storageaccont" {
-  source = "./resources/storages_accounts"
+  source = "./components/storages_accounts"
+}
 
-  
+module "storageaccounttable" {
+  source               = "./components/storageaccount_table"
+  table_name           = "Employee"
+  storage_account_name = module.storageaccont.storage_account_name
+}
+
+module "employeeEntities" {
+  source = "./components/azure_table_entities/employees"
+
+  storage_table_id = module.storageaccounttable.azstoragetableid
+  initial_entities = local.employee_table_entities
+
 }

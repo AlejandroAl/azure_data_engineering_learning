@@ -34,13 +34,15 @@ resource "azurerm_storage_account" "this" {
 }
 
 resource "azurerm_storage_data_lake_gen2_filesystem" "gen2_data" {
-  depends_on = [
-  azurerm_storage_account.this]
-
   name               = "data"
   storage_account_id = azurerm_storage_account.this.id
 
   lifecycle {
     prevent_destroy = true
   }
+}
+
+
+output "storage_account_name" {
+  value = azurerm_storage_account.this.name
 }
