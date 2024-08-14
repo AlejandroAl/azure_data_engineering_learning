@@ -5,22 +5,22 @@ variable "ENV" {
 }
 
 variable "REGION" {
-  type = string
+  type        = string
   description = "The Region for billing."
-  default = "global"
+  default     = "global"
 }
 
 
 
 variable "STORAGE_ACCOUNT_REPLICATION_TYPE" {
-  type = string
+  type        = string
   description = "Storage Account replication type."
-  default = "LRS"
+  default     = "LRS"
 }
 
 
 variable "LOCATION" {
-  type = string
+  type        = string
   description = "The Azure Region in which all resources in this example should be created."
-  default = "westeurope"
+  default     = "westeurope"
 }
