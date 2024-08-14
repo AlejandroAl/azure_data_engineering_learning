@@ -1,3 +1,15 @@
+variable "ENV" {
+  type        = string
+  description = "Environment to where the resource belong"
+  default     = "dev"
+}
+
+variable "LOCATION" {
+  type        = string
+  description = "The Azure Region in which all resources in this example should be created."
+  default     = "westeurope"
+}
+
 locals {
   employee_table_entities = {
     "001" = {
@@ -85,4 +97,23 @@ module "employeeEntities" {
   storage_table_id = module.storageaccounttable.azstoragetableid
   initial_entities = local.employee_table_entities
 
+}
+
+resource "azurerm_resource_group" "data_factory_rs" {
+  name     = "rs${var.ENV}adf${var.LOCATION}"
+  location = "westeurope"
+}
+
+module "adf_test" {
+  source = "./components/data_factory"
+
+  RESOURCE_GROUP_NAME = azurerm_resource_group.data_factory_rs.name
+  SUBFFIX_NAME_ADF    = "test"
+}
+
+module "sa_container" {
+  source = "./implementations/azurestorage/containers"
+
+  ENV                  = var.ENV
+  storage_account_name = module.storageaccont.storage_account_name
 }
